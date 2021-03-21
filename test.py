@@ -34,8 +34,8 @@ def getDatasets():
     x_test = colorNormalization(x_test)
 
     # Fix missing dimension
-    x_train = tf.expand_dims(x_train, axis=-1)
-    x_test = tf.expand_dims(x_test, axis=-1)
+    x_train = np.array(tf.expand_dims(x_train, axis=-1))
+    x_test = np.array(tf.expand_dims(x_test, axis=-1))
 
     return (x_train, y_train), (x_test, y_test)
 
