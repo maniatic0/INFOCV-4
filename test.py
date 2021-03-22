@@ -246,11 +246,11 @@ def main():
     models_scores = [[] for _ in range(len(models))]
 
     # K fold validation
-    num_folds = 2
+    num_folds = 10
     kfold = KFold(n_splits=num_folds, shuffle=True)
 
     # Training parameters
-    no_epochs = 2
+    no_epochs = 15
     batch_size = 64
     verbosity = 1
 
