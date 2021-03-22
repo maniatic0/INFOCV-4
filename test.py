@@ -129,6 +129,9 @@ COMPARISON_FOLDER = TRAINING_FOLDER / "comparison"
 if not RUNNING_IN_COLAB and not COMPARISON_FOLDER.exists():
     COMPARISON_FOLDER.mkdir()
 
+TESTING_FOLDER = ROOT / "testing"
+if not RUNNING_IN_COLAB and not TESTING_FOLDER.exists():
+    TESTING_FOLDER.mkdir()
 
 def plotTrainingHistory(folder, title, filename, history):
     """Plot training history"""
@@ -236,6 +239,9 @@ def main():
     # Models to run
     models = getModelsGenerators()
 
+    # Models for Final training
+    num_models_final = 2
+
     # Models' scores
     models_scores = [[] for _ in range(len(models))]
 
@@ -303,6 +309,53 @@ def main():
 
     # Convert to numpy array
     models_processed_scores = np.array(models_processed_scores)
+    comparison_axis = 0
+    models_idx = np.argpartition(models_processed_scores, num_models_final-1, axis=comparison_axis)
+
+    # Get Selected models for final training
+    print("Selected Models")
+    final_models = [() for _ in range(num_models_final)]
+    for index in range(num_models_final):
+        og_index = models_idx[index][comparison_axis]
+
+        final_models[index] = models[og_index]
+        name = final_models[index][0]
+
+        print(
+            f"Model {index+1}: {name} with mean Loss of {models_processed_scores[og_index][0]} and mean Accuracy of {models_processed_scores[og_index][1]}"
+        )
+    print("")
+
+    for index, (name, generator) in enumerate(final_models):
+        # Copy model to train copy
+        model = generator()
+
+        # Train and Test
+        print(
+            f'Training and Testing Final Model "{name}"'
+        )
+        history = model.fit(
+            x_train,
+            y_train,
+            batch_size=batch_size,
+            epochs=no_epochs,
+            verbose=verbosity,
+            validation_data=(x_test, y_test),
+        )
+
+        # Plot
+        plotTrainingHistory(
+            TESTING_FOLDER,
+            f'Model "{name}" Final Training',
+            f"{name.lower()}",
+            history.history,
+        )
+
+        final_loss = history.history["val_loss"][-1]
+        final_acc = history.history["val_accuracy"][-1]
+        print(f'Final Model "{name}" with Testing Loss {final_loss} and Testing Accuracy {final_acc}')
+
+        print("")
 
 
 if __name__ == "__main__":
