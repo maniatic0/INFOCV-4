@@ -133,6 +133,10 @@ TESTING_FOLDER = ROOT / "testing"
 if not RUNNING_IN_COLAB and not TESTING_FOLDER.exists():
     TESTING_FOLDER.mkdir()
 
+MODELS_FOLDER = ROOT / "models"
+if not RUNNING_IN_COLAB and not MODELS_FOLDER.exists():
+    MODELS_FOLDER.mkdir()
+
 def plotTrainingHistory(folder, title, filename, history):
     """Plot training history"""
     fig = plt.figure()
@@ -238,6 +242,21 @@ def main():
 
     # Models to run
     models = getModelsGenerators()
+
+    # Save models images
+    for (name, generator) in models:
+        model = generator()
+
+        filename = None
+        if RUNNING_IN_COLAB:
+            # On Google Colab is better to show the image
+            filename = f'{name.lower()}.png'
+        else:
+            filename = MODELS_FOLDER / f'{name.lower()}.png'
+
+        tf.keras.utils.plot_model(
+            model, to_file=filename, show_shapes=True, show_layer_names=True, rankdir='TB', expand_nested=False, dpi=96
+        )
 
     # Models for Final training
     num_models_final = 2
