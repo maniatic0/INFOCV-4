@@ -1,12 +1,13 @@
 import matplotlib.pyplot as plt
-import tensorflow as tf
 
+import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.losses import sparse_categorical_crossentropy
 from tensorflow.keras.optimizers import Adam
+from tensorflow.python.platform import tf_logging as logging
 
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping, Callback
 
 from sklearn.model_selection import KFold
 from sklearn.model_selection import KFold
@@ -15,6 +16,7 @@ import numpy as np
 
 from pathlib import Path
 
+import math
 
 RUNNING_IN_COLAB = False
 
@@ -117,7 +119,9 @@ def getModelsGenerators():
 
 
 # Path info
-ROOT = Path(".")
+ROOT = Path(".") / "results"
+if not RUNNING_IN_COLAB and not ROOT.exists():
+    ROOT.mkdir()
 
 TRAINING_FOLDER = ROOT / "training"
 if not RUNNING_IN_COLAB and not TRAINING_FOLDER.exists():
@@ -132,15 +136,15 @@ if not RUNNING_IN_COLAB and not COMPARISON_FOLDER.exists():
     COMPARISON_FOLDER.mkdir()
 
 TESTING_FOLDER = ROOT / "testing"
-if not RUNNING_IN_COLAB and not TESTING_FOLDER.exists():
+if not TESTING_FOLDER.exists():
     TESTING_FOLDER.mkdir()
 
 MODELS_FOLDER = ROOT / "models"
-if not RUNNING_IN_COLAB and not MODELS_FOLDER.exists():
+if not MODELS_FOLDER.exists():
     MODELS_FOLDER.mkdir()
 
 
-def plotTrainingHistory(folder, title, filename, history):
+def plotTrainingHistory(folder, title, filename, history, bestEpoch):
     """Plot training history"""
     fig = plt.figure()
     plt.axes()
@@ -155,14 +159,23 @@ def plotTrainingHistory(folder, title, filename, history):
     plt.xticks(range(1, epoch_number + 1))
 
     # Plot everything
-    plt.plot(range(1, epoch_number + 1), history["loss"], label="Loss")
-    plt.plot(range(1, epoch_number + 1), history["accuracy"], label="Accuracy")
-    plt.plot(range(1, epoch_number + 1), history["val_loss"], label="Validation Loss")
+    plt.plot(range(1, epoch_number + 1), history["loss"], label="Loss", color="r")
+    plt.plot(
+        range(1, epoch_number + 1), history["accuracy"], label="Accuracy", color="gold"
+    )
+    plt.plot(
+        range(1, epoch_number + 1),
+        history["val_loss"],
+        label="Validation Loss",
+        color="b",
+    )
     plt.plot(
         range(1, epoch_number + 1),
         history["val_accuracy"],
         label="Validation  Accuracy",
+        color="magenta",
     )
+    plt.axvline(x=bestEpoch + 1, label="Best Epoch", color="lime")
 
     # Draw legend
     plt.legend(loc="lower left")
@@ -214,8 +227,40 @@ def processKFoldScores(folder, title, filename, scores):
     else:
         fig.savefig(folder / f"{filename}.png", dpi=fig.dpi)
 
-    # Get Loss mean
-    return means
+    # Return Info
+    return (means, stds)
+
+
+class BestEpochCallback(Callback):
+    def __init__(self, *args, **kwargs):
+        super(BestEpochCallback, self).__init__(*args, **kwargs)
+        self.monitor = "val_loss"
+        self.reset()
+
+    def reset(self):
+        self.bestEpoch = -1
+        self.bestValue = math.inf
+        self.bestWeights = None
+
+    def get_monitor_value(self, logs):
+        # From https://github.com/tensorflow/tensorflow/blob/v2.4.1/tensorflow/python/keras/callbacks.py#L1660-L1791
+        logs = logs or {}
+        monitor_value = logs.get(self.monitor)
+        if monitor_value is None:
+            logging.warning(
+                "Early stopping conditioned on metric `%s` "
+                "which is not available. Available metrics are: %s",
+                self.monitor,
+                ",".join(list(logs.keys())),
+            )
+        return monitor_value
+
+    def on_epoch_end(self, epoch, logs=None):
+        value = self.get_monitor_value(logs)
+        if value < self.bestValue:
+            self.bestEpoch = epoch
+            self.bestValue = value
+            self.bestWeights = self.model.get_weights()
 
 
 def main():
@@ -246,26 +291,34 @@ def main():
     # Models to run
     models = getModelsGenerators()
 
-    # Save models images
+    # Save models info
     for (name, generator) in models:
         model = generator()
 
         filename = None
         if RUNNING_IN_COLAB:
             # On Google Colab is better to show the image
-            filename = f"{name.lower()}.png"
+            filename = f"{name.lower()}"
+            model.summary()
         else:
-            filename = MODELS_FOLDER / f"{name.lower()}.png"
+            filename = MODELS_FOLDER / f"{name.lower()}"
+            with open(f"{filename}.txt", "w") as f:
+                model.summary(print_fn=lambda x: f.write(x + "\n"))
+                f.close()
 
+        # Model Summary Image
         tf.keras.utils.plot_model(
             model,
-            to_file=filename,
+            to_file=f"{filename}.png",
             show_shapes=True,
             show_layer_names=True,
             rankdir="TB",
             expand_nested=False,
             dpi=96,
         )
+
+        # Save Model Architecture
+        model.save(filename)
 
     # Models for Final training
     num_models_final = 2
@@ -281,15 +334,12 @@ def main():
     no_epochs = 15
     batch_size = 64
     verbosity = 1
-
-    # Callbacks for training
-    callbacks = []
+    final_validation_split = 0.1
 
     # Early stopping to avoid overfitting
-    patience = int(0.1 * no_epochs)
-    es = EarlyStopping(monitor='val_loss', mode='min', verbose=verbosity, patience=patience)
-    callbacks.append(es)
-    
+    patience = int(math.ceil(0.3 * no_epochs))
+    monitor = "val_loss"
+    mode = "min"
 
     # Misc variables for loop
     fold_number = 1
@@ -301,6 +351,17 @@ def main():
         y_fold_test = y_train[test_index]
 
         for index, (name, generator) in enumerate(models):
+            # Callbacks for training
+            callbacks = []
+            early_stopping = EarlyStopping(
+                monitor=monitor, mode=mode, verbose=verbosity, patience=patience
+            )
+            callbacks.append(early_stopping)
+
+            # Saving the best model
+            best_epoch = BestEpochCallback()
+            callbacks.append(best_epoch)
+
             # Copy model to train copy
             model = generator()
 
@@ -315,20 +376,24 @@ def main():
                 epochs=no_epochs,
                 verbose=verbosity,
                 validation_data=(x_fold_test, y_fold_test),
-                callbacks=callbacks
+                callbacks=callbacks,
             )
 
             # Plot
             plotTrainingHistory(
                 HISTORY_FOLDER,
-                f'Model "{name}" Fold-{fold_number}/{num_folds} Training',
+                f'Model "{name}" Fold-{fold_number}/{num_folds} Training. Best Epoch {best_epoch.bestEpoch+1}.',
                 f"{name.lower()}-fold-{fold_number}-{num_folds}",
                 history.history,
+                best_epoch.bestEpoch,
             )
 
             # Save Test
             models_scores[index].append(
-                (history.history["val_loss"][-1], history.history["val_accuracy"][-1])
+                (
+                    history.history["val_loss"][best_epoch.bestEpoch],
+                    history.history["val_accuracy"][best_epoch.bestEpoch],
+                )
             )
             print("")
 
@@ -336,14 +401,40 @@ def main():
 
     # Models' processed scores
     models_processed_scores = [[] for _ in range(len(models))]
+    models_processed_csv_scores = [{} for _ in range(len(models))]
 
     for index, (name, _) in enumerate(models):
-        models_processed_scores[index] = processKFoldScores(
+        means, stds = processKFoldScores(
             COMPARISON_FOLDER,
             f'Model "{name}" {num_folds}-Fold Training',
             f"{name.lower()}-folds-{num_folds}",
             models_scores[index],
         )
+        models_processed_scores[index] = means
+        models_processed_csv_scores[index] = {
+            "model_name": name,
+            "val_loss_mean": means[0],
+            "val_loss_std": means[1],
+            "val_accuracy_mean": stds[0],
+            "val_accuracy_std": stds[1],
+        }
+
+    if not RUNNING_IN_COLAB:
+        import csv
+
+        with open(COMPARISON_FOLDER / "models_values.csv", "w") as f:
+            fieldnames = [
+                "model_name",
+                "val_loss_mean",
+                "val_loss_std",
+                "val_accuracy_mean",
+                "val_accuracy_std",
+            ]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+
+            writer.writeheader()
+            for score in models_processed_csv_scores:
+                writer.writerow(score)
 
     # Convert to numpy array
     models_processed_scores = np.array(models_processed_scores)
@@ -362,41 +453,103 @@ def main():
         name = final_models[index][0]
 
         print(
-            f"Model {index+1}: {name} with mean Loss of {models_processed_scores[og_index][0]} and mean Accuracy of {models_processed_scores[og_index][1]}"
+            f"Model {index+1}: {name} with mean Loss of {models_processed_scores[og_index][0]:.4f} and mean Accuracy of {models_processed_scores[og_index][1]:.4f}"
         )
     print("")
 
+    # Shuffle training data for final training
+    p = np.random.permutation(len(x_train))
+    x_train = x_train[p]
+    y_train = y_train[p]
+
+    # Scores for CSV
+    final_scores = [{} for _ in range(len(final_models))]
+
     for index, (name, generator) in enumerate(final_models):
+        # Callbacks for training
+        callbacks = []
+        early_stopping = EarlyStopping(
+            monitor=monitor, mode=mode, verbose=verbosity, patience=patience
+        )
+        callbacks.append(early_stopping)
+
+        # Saving the best model
+        best_epoch = BestEpochCallback()
+        callbacks.append(best_epoch)
+
         # Copy model to train copy
         model = generator()
 
         # Train and Test
-        print(f'Training and Testing Final Model "{name}"')
+        print(f'Training Final Model {index+1}: "{name}"')
         history = model.fit(
             x_train,
             y_train,
             batch_size=batch_size,
             epochs=no_epochs,
             verbose=verbosity,
-            validation_data=(x_test, y_test),
-            callbacks=callbacks
+            validation_split=final_validation_split,
+            callbacks=callbacks,
         )
 
+        filename = f"final-model-{index+1}-{name.lower()}"
         # Plot
         plotTrainingHistory(
             TESTING_FOLDER,
-            f'Model "{name}" Final Training',
-            f"{name.lower()}",
+            f'Final Model {index+1} "{name}" Training. Best Epoch {best_epoch.bestEpoch+1}.',
+            filename,
             history.history,
+            best_epoch.bestEpoch,
         )
 
-        final_loss = history.history["val_loss"][-1]
-        final_acc = history.history["val_accuracy"][-1]
-        print(
-            f'Final Model "{name}" with Testing Loss {final_loss} and Testing Accuracy {final_acc}'
+        # Set Best Weights
+        model.set_weights(best_epoch.bestWeights)
+
+        # Save Model
+        model.save(TESTING_FOLDER / filename)
+
+        # Get and Print Results
+        val_loss = history.history["val_loss"][best_epoch.bestEpoch]
+        val_acc = history.history["val_accuracy"][best_epoch.bestEpoch]
+
+        print(f'Testing Final Model {index+1}: "{name}"')
+        test_loss, test_acc = model.evaluate(
+            x_test, y_test, batch_size=batch_size, verbose=verbosity
         )
+
+        print(
+            f'Final Model {index+1} "{name}" with Testing Loss {test_loss:.4f}, Testing Accuracy {test_acc:.4f}, Validation Loss {val_loss:.4f} and Validation Accuracy {val_acc:.4f}'
+        )
+
+        # Save for CSV
+        final_scores[index] = {
+            "model_number": index + 1,
+            "model_name": name,
+            "test_loss": test_loss,
+            "test_acc": test_acc,
+            "val_loss": val_loss,
+            "val_acc": val_acc,
+        }
 
         print("")
+
+    if not RUNNING_IN_COLAB:
+        import csv
+
+        with open(TESTING_FOLDER / "models_values.csv", "w") as f:
+            fieldnames = [
+                "model_number",
+                "model_name",
+                "test_loss",
+                "test_acc",
+                "val_loss",
+                "val_acc",
+            ]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+
+            writer.writeheader()
+            for score in final_scores:
+                writer.writerow(score)
 
 
 if __name__ == "__main__":
