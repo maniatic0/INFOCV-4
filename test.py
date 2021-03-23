@@ -1,12 +1,14 @@
 import matplotlib.pyplot as plt
 import tensorflow as tf
+
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.losses import sparse_categorical_crossentropy
 from tensorflow.keras.optimizers import Adam
+
+from keras.callbacks import EarlyStopping
+
 from sklearn.model_selection import KFold
-
-
 from sklearn.model_selection import KFold
 
 import numpy as np
@@ -137,6 +139,7 @@ MODELS_FOLDER = ROOT / "models"
 if not RUNNING_IN_COLAB and not MODELS_FOLDER.exists():
     MODELS_FOLDER.mkdir()
 
+
 def plotTrainingHistory(folder, title, filename, history):
     """Plot training history"""
     fig = plt.figure()
@@ -250,12 +253,18 @@ def main():
         filename = None
         if RUNNING_IN_COLAB:
             # On Google Colab is better to show the image
-            filename = f'{name.lower()}.png'
+            filename = f"{name.lower()}.png"
         else:
-            filename = MODELS_FOLDER / f'{name.lower()}.png'
+            filename = MODELS_FOLDER / f"{name.lower()}.png"
 
         tf.keras.utils.plot_model(
-            model, to_file=filename, show_shapes=True, show_layer_names=True, rankdir='TB', expand_nested=False, dpi=96
+            model,
+            to_file=filename,
+            show_shapes=True,
+            show_layer_names=True,
+            rankdir="TB",
+            expand_nested=False,
+            dpi=96,
         )
 
     # Models for Final training
@@ -272,6 +281,15 @@ def main():
     no_epochs = 15
     batch_size = 64
     verbosity = 1
+
+    # Callbacks for training
+    callbacks = []
+
+    # Early stopping to avoid overfitting
+    patience = int(0.1 * no_epochs)
+    es = EarlyStopping(monitor='val_loss', mode='min', verbose=verbosity, patience=patience)
+    callbacks.append(es)
+    
 
     # Misc variables for loop
     fold_number = 1
@@ -297,6 +315,7 @@ def main():
                 epochs=no_epochs,
                 verbose=verbosity,
                 validation_data=(x_fold_test, y_fold_test),
+                callbacks=callbacks
             )
 
             # Plot
@@ -329,7 +348,9 @@ def main():
     # Convert to numpy array
     models_processed_scores = np.array(models_processed_scores)
     comparison_axis = 0
-    models_idx = np.argpartition(models_processed_scores, num_models_final-1, axis=comparison_axis)
+    models_idx = np.argpartition(
+        models_processed_scores, num_models_final - 1, axis=comparison_axis
+    )
 
     # Get Selected models for final training
     print("Selected Models")
@@ -350,9 +371,7 @@ def main():
         model = generator()
 
         # Train and Test
-        print(
-            f'Training and Testing Final Model "{name}"'
-        )
+        print(f'Training and Testing Final Model "{name}"')
         history = model.fit(
             x_train,
             y_train,
@@ -360,6 +379,7 @@ def main():
             epochs=no_epochs,
             verbose=verbosity,
             validation_data=(x_test, y_test),
+            callbacks=callbacks
         )
 
         # Plot
@@ -372,7 +392,9 @@ def main():
 
         final_loss = history.history["val_loss"][-1]
         final_acc = history.history["val_accuracy"][-1]
-        print(f'Final Model "{name}" with Testing Loss {final_loss} and Testing Accuracy {final_acc}')
+        print(
+            f'Final Model "{name}" with Testing Loss {final_loss} and Testing Accuracy {final_acc}'
+        )
 
         print("")
 
