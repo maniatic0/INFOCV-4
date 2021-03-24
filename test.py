@@ -53,7 +53,7 @@ def getModelsGenerators():
     data_augmentation = tf.keras.Sequential(
         [
             tf.keras.layers.experimental.preprocessing.RandomFlip(
-                "horizontal_and_vertical", input_shape=input_shape
+                "horizontal", input_shape=input_shape
             ),
             tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
             tf.keras.layers.experimental.preprocessing.RandomContrast(0.1),
