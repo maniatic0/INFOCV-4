@@ -647,11 +647,11 @@ def plotTrainingHistory(folder, title, filename, history, bestEpoch):
     # Draw legend
     plt.legend(loc="lower left")
 
+    fig.tight_layout()
     if RUNNING_IN_COLAB:
         # On Google Colab is better to show the image
         plt.show()
     else:
-        fig.tight_layout()
         fig.savefig(folder / f"{filename}.png", dpi=fig.dpi)
 
 
@@ -689,11 +689,11 @@ def processKFoldScores(folder, title, filename, scores):
         text = " μ={:.2f}\n σ={:.2f}".format(means[i], stds[i])
         ax.annotate(text, xy=(x, y))
 
+    fig.tight_layout()
     if RUNNING_IN_COLAB:
         # On Google Colab is better to show the image
         plt.show()
     else:
-        fig.tight_layout()
         fig.savefig(folder / f"{filename}.png", dpi=fig.dpi)
 
     # Return Info
@@ -759,12 +759,13 @@ def plotConfusionMatrix(folder, title, filename, categories, y_pred, y_real):
     plt.ylabel("Prediction Class")
     plt.xlabel("Real Class")
 
+    fig.set_size_inches(19.20, 10.80)  # 1920x1080
+    fig.tight_layout()
+
     if RUNNING_IN_COLAB:
         # On Google Colab is better to show the image
         plt.show()
     else:
-        fig.set_size_inches(19.20, 10.80)  # 1920x1080
-        fig.tight_layout()
         fig.savefig(folder / f"{filename}.png", dpi=100)
 
 
