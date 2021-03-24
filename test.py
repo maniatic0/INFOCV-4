@@ -1,8 +1,16 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, AveragePooling2D
+from tensorflow.keras.layers import (
+    Dense,
+    Flatten,
+    Conv2D,
+    MaxPooling2D,
+    Dropout,
+    AveragePooling2D,
+)
 from tensorflow.keras.losses import sparse_categorical_crossentropy
 from tensorflow.keras.optimizers import Adam
 from tensorflow.python.platform import tf_logging as logging
@@ -10,6 +18,7 @@ from tensorflow.python.platform import tf_logging as logging
 from keras.callbacks import EarlyStopping, Callback
 
 from sklearn.model_selection import KFold
+from sklearn.metrics import confusion_matrix
 
 import numpy as np
 
@@ -32,6 +41,22 @@ print(f"Tensor Flow Version: {tf.__version__}\n")
 
 MNIST = tf.keras.datasets.fashion_mnist
 
+CLASS_NAMES = [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot",
+]
+
+NO_CLASSES = len(CLASS_NAMES)
+INPUT_SHAPE = (28, 28, 1)
+
 
 def getDatasets():
     # Load data
@@ -42,9 +67,6 @@ def getDatasets():
     x_test = np.array(tf.expand_dims(x_test / 255.0, axis=-1))
 
     return (x_train, y_train), (x_test, y_test)
-
-NO_CLASSES = 10
-INPUT_SHAPE = (28, 28, 1)
 
 
 def getModelsGenerators():
@@ -121,8 +143,8 @@ def getModelsGenerators():
 
     # TODO: Other models follow a similar structure to define them
     model3_name = "Third_Model"
-    #back to 2 conv layers. Add Dropout layer. Change first conv2d filtersize to 64 instead of 32
-    #this works well
+    # back to 2 conv layers. Add Dropout layer. Change first conv2d filtersize to 64 instead of 32
+    # this works well
     def generateModel3():
         model = Sequential(name=model3_name)
         model.add(
@@ -150,11 +172,11 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    #models.append((model3_name, generateModel3))
 
+    # models.append((model3_name, generateModel3))
 
     modeltry_name = "Easy_Model"
-    #really simple model with 2 dense layers
+    # really simple model with 2 dense layers
     def generateModelSimple():
         model = Sequential(name=model4_name)
         model.add(
@@ -167,7 +189,6 @@ def getModelsGenerators():
         model.add(Dense(128, activation="relu"))
         model.add(Dense(NO_CLASSES, activation="softmax"))
 
-
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -176,12 +197,10 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((modeltry_name, generateModelSimple))
-
-
+    # models.append((modeltry_name, generateModelSimple))
 
     model4_name = "Fourth_Model"
-        #Increase pool size, remove 1 dense layer
+    # Increase pool size, remove 1 dense layer
     def generateModel4():
         model = Sequential(name=model4_name)
         model.add(
@@ -195,7 +214,6 @@ def getModelsGenerators():
         model.add(Dense(256, activation="relu"))
         model.add(Dense(NO_CLASSES, activation="softmax"))
 
-
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -204,11 +222,10 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((model4_name, generateModel4))
-
+    # models.append((model4_name, generateModel4))
 
     model5_name = "Fifth_Model"
-        #Additional Dropout layer
+    # Additional Dropout layer
     def generateModel5():
         model = Sequential(name=model5_name)
         model.add(
@@ -230,11 +247,11 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    #models.append((model5_name, generateModel5))
 
+    # models.append((model5_name, generateModel5))
 
     model6_name = "SimpleModel_AveragePooling"
-        #AveragePooling instead of MaxPooling. Wait until test of model 5 to see if we should cut the additional dropout layer
+    # AveragePooling instead of MaxPooling. Wait until test of model 5 to see if we should cut the additional dropout layer
     def generateModel6():
         model = Sequential(name=model6_name)
         model.add(
@@ -247,7 +264,6 @@ def getModelsGenerators():
         model.add(Dense(128, activation="relu"))
         model.add(Dense(NO_CLASSES, activation="softmax"))
 
-
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -256,12 +272,11 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((model6_name, generateModel6))
-
+    # models.append((model6_name, generateModel6))
 
     model7_name = "SimpleModel_SmallerKernel"
 
-        #Reduce kernel size from (3,3) to (2,2)
+    # Reduce kernel size from (3,3) to (2,2)
     def generateModel7():
         model = Sequential(name=model7_name)
         model.add(
@@ -274,7 +289,6 @@ def getModelsGenerators():
         model.add(Dense(128, activation="relu"))
         model.add(Dense(NO_CLASSES, activation="softmax"))
 
-
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -282,9 +296,11 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    #models.append((model7_name, generateModel7))
+
+    # models.append((model7_name, generateModel7))
 
     model8_name = "SimpleModel_3DenseLayers"
+
     def generateModel8():
         model = Sequential(name=model8_name)
         model.add(
@@ -298,7 +314,6 @@ def getModelsGenerators():
         model.add(Dense(64, activation="relu"))
         model.add(Dense(NO_CLASSES, activation="softmax"))
 
-
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -306,11 +321,11 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    #models.append((model8_name, generateModel8))
 
-
+    # models.append((model8_name, generateModel8))
 
     model9_name = "3DenseLayers_SmallerKernel"
+
     def generateModel9():
         model = Sequential(name=model9_name)
         model.add(
@@ -324,7 +339,6 @@ def getModelsGenerators():
         model.add(Dense(64, activation="relu"))
         model.add(Dense(NO_CLASSES, activation="softmax"))
 
-
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -332,10 +346,11 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    
-    #models.append((model9_name, generateModel9))
+
+    # models.append((model9_name, generateModel9))
 
     model10_name = "DoubleConvolution_SmallerKernel"
+
     def generateModel10():
         model = Sequential(name=model10_name)
         model.add(
@@ -343,8 +358,7 @@ def getModelsGenerators():
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
-        model.add(
-            Conv2D(32, kernel_size=(2, 2), activation="relu"))
+        model.add(Conv2D(32, kernel_size=(2, 2), activation="relu"))
         model.add(MaxPooling2D(pool_size=(2, 2)))
 
         model.add(Flatten())
@@ -353,7 +367,6 @@ def getModelsGenerators():
         model.add(Dense(64, activation="relu"))
         model.add(Dense(NO_CLASSES, activation="softmax"))
 
-
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -361,20 +374,19 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    
-    #models.append((model10_name, generateModel10))
 
+    # models.append((model10_name, generateModel10))
 
     model11_name = "All_3"
+
     def generateModel11():
-        model = Sequential(name=mode11_name)
+        model = Sequential(name=model11_name)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(3, 3)))
         model.add(Dropout(0.3))
-        model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu"))
+        model.add(Conv2D(32, kernel_size=(3, 3), activation="relu"))
         model.add(MaxPooling2D(pool_size=(3, 3)))
         model.add(Dropout(0.3))
         model.add(Flatten())
@@ -383,7 +395,6 @@ def getModelsGenerators():
         model.add(Dense(64, activation="relu"))
         model.add(Dense(NO_CLASSES, activation="softmax"))
 
-
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -391,11 +402,11 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    
-    #models.append((model11_name, generateModel11))
 
+    # models.append((model11_name, generateModel11))
 
     model12_name = "All_3_OneDense"
+
     def generateModel12():
         model = Sequential(name=model12_name)
         model.add(
@@ -403,14 +414,12 @@ def getModelsGenerators():
         )
         model.add(MaxPooling2D(pool_size=(3, 3)))
         model.add(Dropout(0.3))
-        model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu"))
+        model.add(Conv2D(32, kernel_size=(3, 3), activation="relu"))
         model.add(MaxPooling2D(pool_size=(3, 3)))
         model.add(Dropout(0.3))
         model.add(Flatten())
         model.add(Dense(64, activation="relu"))
         model.add(Dense(NO_CLASSES, activation="softmax"))
-
 
         # Compile for training
         model.compile(
@@ -419,10 +428,11 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    
-    #models.append((model12_name, generateModel12))
+
+    # models.append((model12_name, generateModel12))
 
     model13_name = "SimpleModel_64Kernel"
+
     def generateModel13():
         model = Sequential(name=model14_name)
         model.add(
@@ -442,8 +452,8 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    #models.append((model13_name, generateModel13))
 
+    # models.append((model13_name, generateModel13))
 
     """model14_name = "SimpleModel_64Kernel_AvgPooling"
     def generateModel14():
@@ -467,16 +477,16 @@ def getModelsGenerators():
         return model
     #models.append((model14_name, generateModel14))"""
 
-
     # TODO: Other models follow a similar structure to define them
 
     model14_name = "SimpleModel_LessDense_avg"
+
     def generateModel14():
         model = Sequential(name=model14_name)
         model.add(
             Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
-        model.add(AveragePooling2D(pool_size=(2, 2)))           
+        model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.3))
         model.add(Flatten())
 
@@ -490,8 +500,8 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    #models.append((model14_name, generateModel14))
 
+    # models.append((model14_name, generateModel14))
 
     # TODO: Other models follow a similar structure to define them
 
@@ -519,6 +529,7 @@ def getModelsGenerators():
     models.append((model15_name, generateModel15)
     """
     model16_name = "DoubleConv_LessDense_avg"
+
     def generateModel16():
         model = Sequential(name=model16_name)
         model.add(
@@ -526,9 +537,7 @@ def getModelsGenerators():
         )
         model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.3))
-        model.add(
-            Conv2D(64, kernel_size=(2, 2), activation="relu")
-        )
+        model.add(Conv2D(64, kernel_size=(2, 2), activation="relu"))
         model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.3))
         model.add(Flatten())
@@ -543,9 +552,11 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    #models.append((model16_name,generateModel16))
+
+    # models.append((model16_name,generateModel16))
 
     model17_name = "17_DoubleConv_LessDense_avg_LargerKernel"
+
     def generateModel17():
         model = Sequential(name=model17_name)
         model.add(
@@ -553,9 +564,7 @@ def getModelsGenerators():
         )
         model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.3))
-        model.add(
-            Conv2D(64, kernel_size=(3, 3), activation="relu")
-        )
+        model.add(Conv2D(64, kernel_size=(3, 3), activation="relu"))
         model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.3))
         model.add(Flatten())
@@ -570,11 +579,10 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    models.append((model17_name,generateModel17))
 
+    models.append((model17_name, generateModel17))
 
     return models
-
 
 
 # Path info
@@ -643,6 +651,7 @@ def plotTrainingHistory(folder, title, filename, history, bestEpoch):
         # On Google Colab is better to show the image
         plt.show()
     else:
+        fig.tight_layout()
         fig.savefig(folder / f"{filename}.png", dpi=fig.dpi)
 
 
@@ -684,10 +693,79 @@ def processKFoldScores(folder, title, filename, scores):
         # On Google Colab is better to show the image
         plt.show()
     else:
+        fig.tight_layout()
         fig.savefig(folder / f"{filename}.png", dpi=fig.dpi)
 
     # Return Info
     return (means, stds)
+
+
+def plotConfusionMatrix(folder, title, filename, categories, y_pred, y_real):
+    # Get the confusion matrix
+    cf_matrix = confusion_matrix(y_real, y_pred)
+    cf_normalized = cf_matrix / np.sum(cf_matrix)
+
+    no_classes = len(categories)
+
+    cf_text = [["" for _ in range(no_classes)] for _ in range(no_classes)]
+    xticklabels = ["" for _ in range(no_classes)]
+    yticklabels = ["" for _ in range(no_classes)]
+    total_correct = 0
+    total_incorrect = 0
+    total = 0
+    for i in range(no_classes):
+        # Get Row Info
+        total_row = np.sum(cf_matrix[i, :])
+        correct_row = cf_matrix[i, i] / total_row
+        incorrect_row = (total_row - cf_matrix[i, i]) / total_row
+        xticklabels[
+            i
+        ] = f"{categories[i]}\nT: {total_row}\nC: {correct_row:.2%}\nW: {incorrect_row:.2%}"
+
+        # Add to total
+        total += total_row
+        total_correct += cf_matrix[i, i]
+        total_incorrect += total_row - cf_matrix[i, i]
+
+        # Get Col Info
+        total_col = np.sum(cf_matrix[:, i])
+        correct_col = cf_matrix[i, i] / total_col
+        incorrect_col = (total_col - cf_matrix[i, i]) / total_col
+        yticklabels[
+            i
+        ] = f"{categories[i]}\nT: {total_row}\nC: {correct_col:.2%}\nW: {incorrect_col:.2%}"
+
+        for j in range(no_classes):
+            cf_text[i][j] = f"T: {cf_matrix[i,j]}\nP: {cf_normalized[i,j]:.2%}"
+
+    # Plot Confusion matrix
+    fig = plt.figure()
+    plt.axes()
+    plt.title(
+        f"{title} T: {total} C: {total_correct/total:.2%} W: {total_incorrect/total:.2%}"
+    )
+
+    cf_text = np.asarray(cf_text)
+    sns.heatmap(
+        cf_matrix,
+        annot=cf_text,
+        fmt="",
+        cmap="Blues",
+        xticklabels=xticklabels,
+        yticklabels=yticklabels,
+    )
+    plt.yticks(rotation=0)  # Fix rotation
+    plt.xticks(rotation=0)  # Fix rotation
+    plt.ylabel("Prediction Class")
+    plt.xlabel("Real Class")
+
+    if RUNNING_IN_COLAB:
+        # On Google Colab is better to show the image
+        plt.show()
+    else:
+        fig.set_size_inches(19.20, 10.80)  # 1920x1080
+        fig.tight_layout()
+        fig.savefig(folder / f"{filename}.png", dpi=100)
 
 
 class BestEpochCallback(Callback):
@@ -725,26 +803,15 @@ class BestEpochCallback(Callback):
 def main():
     (x_train, y_train), (x_test, y_test) = getDatasets()
 
-    class_names = [
-        "T-shirt/top",
-        "Trouser",
-        "Pullover",
-        "Dress",
-        "Coat",
-        "Sandal",
-        "Shirt",
-        "Sneaker",
-        "Bag",
-        "Ankle boot",
-    ]
-    
     # Class Balance Check
     class_count = Counter(y_train)
     total_training = y_train.shape[0]
     print("Training Classes distribution:")
-    for index, name in enumerate(class_names):
-        print(f"\t- {name}: {class_count[index]}/{total_training} ({100.0 * class_count[index]/total_training:.2f}%)")
-     
+    for index, name in enumerate(CLASS_NAMES):
+        print(
+            f"\t- {name}: {class_count[index]}/{total_training} ({100.0 * class_count[index]/total_training:.2f}%)"
+        )
+
     """ 
     plt.figure(figsize=(10, 10))
     for i in range(25):
@@ -988,6 +1055,19 @@ def main():
 
         print(
             f'Final Model {index+1} "{name}" with Testing Loss {test_loss:.4f}, Testing Accuracy {test_acc:.4f}, Validation Loss {val_loss:.4f} and Validation Accuracy {val_acc:.4f}'
+        )
+
+        y_pred = model.predict(x_test)
+        y_pred = tf.argmax(y_pred, axis=1)
+
+        # Plot Confussion Matrix
+        plotConfusionMatrix(
+            TESTING_FOLDER,
+            f'Final Model {index+1} "{name}" Training.',
+            f"{filename}-confusion",
+            CLASS_NAMES,
+            y_pred,
+            y_test,
         )
 
         # Save for CSV
