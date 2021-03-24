@@ -110,7 +110,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model1_name, generateModel1))
+    # models.append((model1_name, generateModel1))
 
     # Second Model
     model2_name = "Second_Model"
@@ -139,7 +139,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model2_name, generateModel2))
+    # models.append((model2_name, generateModel2))
 
     # TODO: Other models follow a similar structure to define them
     model3_name = "Third_Model"
@@ -635,7 +635,7 @@ def plotTrainingHistory(folder, title, filename, history, bestEpoch):
     plt.xlabel("Epoch")
     plt.ylabel("Value")
 
-    plt.ylim(0.0, 1.0)
+    plt.ylim(0.0, 2.0)
 
     # Calculate epoch info
     epoch_number = len(next(iter(history.values())))
