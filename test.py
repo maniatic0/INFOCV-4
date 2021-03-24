@@ -147,6 +147,7 @@ def getModelsGenerators():
     # this works well
     def generateModel3():
         model = Sequential(name=model3_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -179,6 +180,7 @@ def getModelsGenerators():
     # really simple model with 2 dense layers
     def generateModelSimple():
         model = Sequential(name=model4_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -203,6 +205,7 @@ def getModelsGenerators():
     # Increase pool size, remove 1 dense layer
     def generateModel4():
         model = Sequential(name=model4_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -228,6 +231,7 @@ def getModelsGenerators():
     # Additional Dropout layer
     def generateModel5():
         model = Sequential(name=model5_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -254,6 +258,7 @@ def getModelsGenerators():
     # AveragePooling instead of MaxPooling. Wait until test of model 5 to see if we should cut the additional dropout layer
     def generateModel6():
         model = Sequential(name=model6_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -279,6 +284,7 @@ def getModelsGenerators():
     # Reduce kernel size from (3,3) to (2,2)
     def generateModel7():
         model = Sequential(name=model7_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -303,6 +309,7 @@ def getModelsGenerators():
 
     def generateModel8():
         model = Sequential(name=model8_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -328,6 +335,7 @@ def getModelsGenerators():
 
     def generateModel9():
         model = Sequential(name=model9_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -353,6 +361,7 @@ def getModelsGenerators():
 
     def generateModel10():
         model = Sequential(name=model10_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -381,6 +390,7 @@ def getModelsGenerators():
 
     def generateModel11():
         model = Sequential(name=model11_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -403,12 +413,13 @@ def getModelsGenerators():
         )
         return model
 
-    # models.append((model11_name, generateModel11))
+    models.append((model11_name, generateModel11))
 
     model12_name = "All_3_OneDense"
 
     def generateModel12():
         model = Sequential(name=model12_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -429,12 +440,13 @@ def getModelsGenerators():
         )
         return model
 
-    # models.append((model12_name, generateModel12))
+    models.append((model12_name, generateModel12))
 
     model13_name = "SimpleModel_64Kernel"
 
     def generateModel13():
         model = Sequential(name=model14_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -453,7 +465,7 @@ def getModelsGenerators():
         )
         return model
 
-    # models.append((model13_name, generateModel13))
+    models.append((model13_name, generateModel13))
 
     """model14_name = "SimpleModel_64Kernel_AvgPooling"
     def generateModel14():
@@ -483,6 +495,7 @@ def getModelsGenerators():
 
     def generateModel14():
         model = Sequential(name=model14_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -501,15 +514,16 @@ def getModelsGenerators():
         )
         return model
 
-    # models.append((model14_name, generateModel14))
+    models.append((model14_name, generateModel14))
 
     # TODO: Other models follow a similar structure to define them
 
-    """model15_name = "SimpleModeLessDense"
+    model15_name = "SimpleModeLessDense"
     def generateModel15():
         model = Sequential(name=model15_name)
+        model.add(data_augmentation)
         model.add(
-            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.3))
@@ -517,7 +531,7 @@ def getModelsGenerators():
 
         model.add(Dense(128, activation="relu"))
         model.add(Dense(64, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -525,13 +539,14 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
+    
+    models.append((model15_name, generateModel15))
 
-    models.append((model15_name, generateModel15)
-    """
     model16_name = "DoubleConv_LessDense_avg"
 
     def generateModel16():
         model = Sequential(name=model16_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -553,12 +568,13 @@ def getModelsGenerators():
         )
         return model
 
-    # models.append((model16_name,generateModel16))
+    models.append((model16_name,generateModel16))
 
     model17_name = "17_DoubleConv_LessDense_avg_LargerKernel"
 
     def generateModel17():
         model = Sequential(name=model17_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -580,7 +596,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model17_name, generateModel17))
+    #models.append((model17_name, generateModel17))
 
     return models
 
