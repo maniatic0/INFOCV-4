@@ -44,16 +44,17 @@ def getDatasets():
 
     return (x_train, y_train), (x_test, y_test)
 
+NO_CLASSES = 10
+INPUT_SHAPE = (28, 28, 1)
+
 
 def getModelsGenerators():
-    input_shape = (28, 28, 1)
-    no_classes = 10
 
     # Data Augmentation
     data_augmentation = tf.keras.Sequential(
         [
             tf.keras.layers.experimental.preprocessing.RandomFlip(
-                "horizontal", input_shape=input_shape
+                "horizontal", input_shape=INPUT_SHAPE
             ),
             tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
             tf.keras.layers.experimental.preprocessing.RandomContrast(0.1),
@@ -70,7 +71,7 @@ def getModelsGenerators():
         model = Sequential(name=model1_name)
         model.add(data_augmentation)
         model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Conv2D(64, kernel_size=(3, 3), activation="relu"))
@@ -78,7 +79,7 @@ def getModelsGenerators():
         model.add(Flatten())
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
         # Compile for training
         model.compile(
@@ -97,7 +98,7 @@ def getModelsGenerators():
         model = Sequential(name=model2_name)
         model.add(data_augmentation)
         model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Conv2D(32, kernel_size=(3, 3), activation="relu"))
@@ -107,7 +108,7 @@ def getModelsGenerators():
         model.add(Flatten())
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
         # Compile for training
         model.compile(
@@ -126,7 +127,7 @@ def getModelsGenerators():
     def generateModel3():
         model = Sequential(name=model3_name)
         model.add(
-            Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Conv2D(64, kernel_size=(3, 3), activation="relu"))
@@ -135,7 +136,7 @@ def getModelsGenerators():
         model.add(Flatten())
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
         # Compile for training
         model.compile(
@@ -158,14 +159,14 @@ def getModelsGenerators():
     def generateModelSimple():
         model = Sequential(name=model4_name)
         model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
         model.add(Flatten())
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
 
         # Compile for training
@@ -185,7 +186,7 @@ def getModelsGenerators():
     def generateModel4():
         model = Sequential(name=model4_name)
         model.add(
-            Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(3, 3)))
         model.add(Conv2D(64, kernel_size=(3, 3), activation="relu"))
@@ -193,7 +194,7 @@ def getModelsGenerators():
         model.add(Dropout(0.3))
         model.add(Flatten())
         model.add(Dense(256, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
 
         # Compile for training
@@ -212,7 +213,7 @@ def getModelsGenerators():
     def generateModel5():
         model = Sequential(name=model5_name)
         model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(3, 3)))
         model.add(Dropout(0.3))
@@ -221,7 +222,7 @@ def getModelsGenerators():
         model.add(Dropout(0.3))
         model.add(Flatten())
         model.add(Dense(256, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
         # Compile for training
         model.compile(
@@ -238,14 +239,14 @@ def getModelsGenerators():
     def generateModel6():
         model = Sequential(name=model6_name)
         model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
         model.add(Flatten())
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
 
         # Compile for training
@@ -265,14 +266,14 @@ def getModelsGenerators():
     def generateModel7():
         model = Sequential(name=model7_name)
         model.add(
-            Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
         model.add(Flatten())
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
 
         # Compile for training
@@ -288,7 +289,7 @@ def getModelsGenerators():
     def generateModel8():
         model = Sequential(name=model8_name)
         model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
@@ -296,7 +297,7 @@ def getModelsGenerators():
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
         model.add(Dense(64, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
 
         # Compile for training
@@ -314,7 +315,7 @@ def getModelsGenerators():
     def generateModel9():
         model = Sequential(name=model9_name)
         model.add(
-            Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
@@ -322,7 +323,7 @@ def getModelsGenerators():
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
         model.add(Dense(64, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
 
         # Compile for training
@@ -339,7 +340,7 @@ def getModelsGenerators():
     def generateModel10():
         model = Sequential(name=model10_name)
         model.add(
-            Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
@@ -351,7 +352,7 @@ def getModelsGenerators():
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
         model.add(Dense(64, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
 
         # Compile for training
@@ -369,7 +370,7 @@ def getModelsGenerators():
     def generateModel11():
         model = Sequential(name=mode11_name)
         model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(3, 3)))
         model.add(Dropout(0.3))
@@ -381,7 +382,7 @@ def getModelsGenerators():
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
         model.add(Dense(64, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
 
         # Compile for training
@@ -399,7 +400,7 @@ def getModelsGenerators():
     def generateModel12():
         model = Sequential(name=model12_name)
         model.add(
-            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(3, 3)))
         model.add(Dropout(0.3))
@@ -409,7 +410,7 @@ def getModelsGenerators():
         model.add(Dropout(0.3))
         model.add(Flatten())
         model.add(Dense(64, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
 
 
         # Compile for training
@@ -426,7 +427,7 @@ def getModelsGenerators():
     def generateModel13():
         model = Sequential(name=model14_name)
         model.add(
-            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.3))
@@ -434,7 +435,7 @@ def getModelsGenerators():
 
         model.add(Dense(256, activation="relu"))
         model.add(Dense(128, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -474,7 +475,7 @@ def getModelsGenerators():
     def generateModel14():
         model = Sequential(name=model14_name)
         model.add(
-            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(AveragePooling2D(pool_size=(2, 2)))           
         model.add(Dropout(0.3))
@@ -482,7 +483,7 @@ def getModelsGenerators():
 
         model.add(Dense(128, activation="relu"))
         model.add(Dense(64, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -522,7 +523,7 @@ def getModelsGenerators():
     def generateModel16():
         model = Sequential(name=model16_name)
         model.add(
-            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.3))
@@ -535,7 +536,7 @@ def getModelsGenerators():
 
         model.add(Dense(128, activation="relu"))
         model.add(Dense(64, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
@@ -549,7 +550,7 @@ def getModelsGenerators():
     def generateModel17():
         model = Sequential(name=model17_name)
         model.add(
-            Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+            Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(AveragePooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.3))
@@ -562,7 +563,7 @@ def getModelsGenerators():
 
         model.add(Dense(128, activation="relu"))
         model.add(Dense(64, activation="relu"))
-        model.add(Dense(no_classes, activation="softmax"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
         # Compile for training
         model.compile(
             loss=sparse_categorical_crossentropy,
