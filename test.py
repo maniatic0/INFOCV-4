@@ -2,14 +2,13 @@ import matplotlib.pyplot as plt
 
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, AveragePooling2D
 from tensorflow.keras.losses import sparse_categorical_crossentropy
 from tensorflow.keras.optimizers import Adam
 from tensorflow.python.platform import tf_logging as logging
 
 from keras.callbacks import EarlyStopping, Callback
 
-from sklearn.model_selection import KFold
 from sklearn.model_selection import KFold
 
 import numpy as np
