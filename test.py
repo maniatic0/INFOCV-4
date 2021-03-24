@@ -15,6 +15,7 @@ from sklearn.model_selection import KFold
 import numpy as np
 
 from pathlib import Path
+from collections import Counter
 
 import math
 
@@ -282,6 +283,14 @@ def main():
         "Bag",
         "Ankle boot",
     ]
+    
+    # Class Balance Check
+    class_count = Counter(y_train)
+    total_training = y_train.shape[0]
+    print("Training Classes distribution:")
+    for index, name in enumerate(class_names):
+        print(f"\t- {name}: {class_count[index]}/{total_training} ({100.0 * class_count[index]/total_training:.2f}%)")
+     
     """ 
     plt.figure(figsize=(10, 10))
     for i in range(25):
