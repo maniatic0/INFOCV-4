@@ -21,7 +21,7 @@ import math
 RUNNING_IN_COLAB = False
 
 try:
-    import google.colab
+    import google.colab  # pylint: disable=import-error
 
     RUNNING_IN_COLAB = True
 except:
@@ -33,23 +33,28 @@ print(f"Tensor Flow Version: {tf.__version__}\n")
 MNIST = tf.keras.datasets.fashion_mnist
 
 
-def colorNormalization(images):
-    """Normalize colors in the 255 range to the 0-1 range"""
-    return images / 255.0
-
-
 def getDatasets():
-    """Get normalized Datasets to work"""
+    """Load and Augment Training Data. Load Testing Data"""
     # Load data
     (x_train, y_train), (x_test, y_test) = MNIST.load_data()
 
-    # Normalize Colors to 0..1
-    x_train = colorNormalization(x_train)
-    x_test = colorNormalization(x_test)
+    # Fix missing dimension and normalize
+    x_train = np.array(tf.expand_dims(x_train / 255.0, axis=-1))
+    x_test = np.array(tf.expand_dims(x_test / 255.0, axis=-1))
 
-    # Fix missing dimension
-    x_train = np.array(tf.expand_dims(x_train, axis=-1))
-    x_test = np.array(tf.expand_dims(x_test, axis=-1))
+    # Data Augmentation
+    data_augmentation = tf.keras.Sequential(
+        [
+            tf.keras.layers.experimental.preprocessing.RandomFlip(
+                "horizontal_and_vertical"
+            ),
+            tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
+            tf.keras.layers.experimental.preprocessing.RandomContrast(0.1),
+        ]
+    )
+
+    x_train = np.concatenate((x_train, data_augmentation(x_train, training=True)), axis=0)
+    y_train = np.concatenate((y_train, y_train), axis=0)
 
     return (x_train, y_train), (x_test, y_test)
 
@@ -278,7 +283,8 @@ def main():
         "Bag",
         "Ankle boot",
     ]
-    """ plt.figure(figsize=(10, 10))
+    """ 
+    plt.figure(figsize=(10, 10))
     for i in range(25):
         plt.subplot(5, 5, i + 1)
         plt.xticks([])
@@ -286,7 +292,8 @@ def main():
         plt.grid(False)
         plt.imshow(x_train[i], cmap=plt.cm.binary)
         plt.xlabel(class_names[y_train[i]])
-    plt.show() """
+    plt.show() 
+    """
 
     # Models to run
     models = getModelsGenerators()
