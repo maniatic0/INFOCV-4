@@ -34,27 +34,12 @@ MNIST = tf.keras.datasets.fashion_mnist
 
 
 def getDatasets():
-    """Load and Augment Training Data. Load Testing Data"""
     # Load data
     (x_train, y_train), (x_test, y_test) = MNIST.load_data()
 
-    # Fix missing dimension and normalize
+    # Fix missing dimension
     x_train = np.array(tf.expand_dims(x_train / 255.0, axis=-1))
     x_test = np.array(tf.expand_dims(x_test / 255.0, axis=-1))
-
-    # Data Augmentation
-    data_augmentation = tf.keras.Sequential(
-        [
-            tf.keras.layers.experimental.preprocessing.RandomFlip(
-                "horizontal_and_vertical"
-            ),
-            tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
-            tf.keras.layers.experimental.preprocessing.RandomContrast(0.1),
-        ]
-    )
-
-    x_train = np.concatenate((x_train, data_augmentation(x_train, training=True)), axis=0)
-    y_train = np.concatenate((y_train, y_train), axis=0)
 
     return (x_train, y_train), (x_test, y_test)
 
@@ -63,6 +48,18 @@ def getModelsGenerators():
     input_shape = (28, 28, 1)
     no_classes = 10
 
+    # Data Augmentation
+    data_augmentation = tf.keras.Sequential(
+        [
+            tf.keras.layers.experimental.preprocessing.RandomFlip(
+                "horizontal_and_vertical", input_shape=input_shape
+            ),
+            tf.keras.layers.experimental.preprocessing.RandomRotation(0.2),
+            tf.keras.layers.experimental.preprocessing.RandomContrast(0.1),
+        ],
+        name="Training_Data_Augmentation",
+    )
+
     models = []
 
     # First Model
@@ -70,6 +67,7 @@ def getModelsGenerators():
 
     def generateModel1():
         model = Sequential(name=model1_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
         )
@@ -96,6 +94,7 @@ def getModelsGenerators():
 
     def generateModel2():
         model = Sequential(name=model2_name)
+        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
         )
