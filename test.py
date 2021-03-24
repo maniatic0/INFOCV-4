@@ -120,7 +120,461 @@ def getModelsGenerators():
     models.append((model2_name, generateModel2))
 
     # TODO: Other models follow a similar structure to define them
+    model3_name = "Third_Model"
+    #back to 2 conv layers. Add Dropout layer. Change first conv2d filtersize to 64 instead of 32
+    #this works well
+    def generateModel3():
+        model = Sequential(name=model3_name)
+        model.add(
+            Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Conv2D(64, kernel_size=(3, 3), activation="relu"))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    #models.append((model3_name, generateModel3))
+
+
+    modeltry_name = "Easy_Model"
+    #really simple model with 2 dense layers
+    def generateModelSimple():
+        model = Sequential(name=model4_name)
+        model.add(
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+
+    #models.append((modeltry_name, generateModelSimple))
+
+
+
+    model4_name = "Fourth_Model"
+        #Increase pool size, remove 1 dense layer
+    def generateModel4():
+        model = Sequential(name=model4_name)
+        model.add(
+            Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(3, 3)))
+        model.add(Conv2D(64, kernel_size=(3, 3), activation="relu"))
+        model.add(MaxPooling2D(pool_size=(3, 3)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+
+    #models.append((model4_name, generateModel4))
+
+
+    model5_name = "Fifth_Model"
+        #Additional Dropout layer
+    def generateModel5():
+        model = Sequential(name=model5_name)
+        model.add(
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(3, 3)))
+        model.add(Dropout(0.3))
+        model.add(Conv2D(64, kernel_size=(3, 3), activation="relu"))
+        model.add(MaxPooling2D(pool_size=(3, 3)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    #models.append((model5_name, generateModel5))
+
+
+    model6_name = "SimpleModel_AveragePooling"
+        #AveragePooling instead of MaxPooling. Wait until test of model 5 to see if we should cut the additional dropout layer
+    def generateModel6():
+        model = Sequential(name=model6_name)
+        model.add(
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+        )
+        model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+
+    #models.append((model6_name, generateModel6))
+
+
+    model7_name = "SimpleModel_SmallerKernel"
+
+        #Reduce kernel size from (3,3) to (2,2)
+    def generateModel7():
+        model = Sequential(name=model7_name)
+        model.add(
+            Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    #models.append((model7_name, generateModel7))
+
+    model8_name = "SimpleModel_3DenseLayers"
+    def generateModel8():
+        model = Sequential(name=model8_name)
+        model.add(
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    #models.append((model8_name, generateModel8))
+
+
+
+    model9_name = "3DenseLayers_SmallerKernel"
+    def generateModel9():
+        model = Sequential(name=model9_name)
+        model.add(
+            Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    
+    #models.append((model9_name, generateModel9))
+
+    model10_name = "DoubleConvolution_SmallerKernel"
+    def generateModel10():
+        model = Sequential(name=model10_name)
+        model.add(
+            Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
+        model.add(
+            Conv2D(32, kernel_size=(2, 2), activation="relu"))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    
+    #models.append((model10_name, generateModel10))
+
+
+    model11_name = "All_3"
+    def generateModel11():
+        model = Sequential(name=mode11_name)
+        model.add(
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(3, 3)))
+        model.add(Dropout(0.3))
+        model.add(
+            Conv2D(32, kernel_size=(3, 3), activation="relu"))
+        model.add(MaxPooling2D(pool_size=(3, 3)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    
+    #models.append((model11_name, generateModel11))
+
+
+    model12_name = "All_3_OneDense"
+    def generateModel12():
+        model = Sequential(name=model12_name)
+        model.add(
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(3, 3)))
+        model.add(Dropout(0.3))
+        model.add(
+            Conv2D(32, kernel_size=(3, 3), activation="relu"))
+        model.add(MaxPooling2D(pool_size=(3, 3)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    
+    #models.append((model12_name, generateModel12))
+
+    model13_name = "SimpleModel_64Kernel"
+    def generateModel13():
+        model = Sequential(name=model14_name)
+        model.add(
+            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    #models.append((model13_name, generateModel13))
+
+
+    """model14_name = "SimpleModel_64Kernel_AvgPooling"
+    def generateModel14():
+        model = Sequential(name=model15_name)
+        model.add(
+            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+        )
+        model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    #models.append((model14_name, generateModel14))"""
+
+
+    # TODO: Other models follow a similar structure to define them
+
+    model14_name = "SimpleModel_LessDense_avg"
+    def generateModel14():
+        model = Sequential(name=model14_name)
+        model.add(
+            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+        )
+        model.add(AveragePooling2D(pool_size=(2, 2)))           
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    #models.append((model14_name, generateModel14))
+
+
+    # TODO: Other models follow a similar structure to define them
+
+    """model15_name = "SimpleModeLessDense"
+    def generateModel15():
+        model = Sequential(name=model15_name)
+        model.add(
+            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+        )
+        model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+
+    models.append((model15_name, generateModel15)
+    """
+    model16_name = "DoubleConv_LessDense_avg"
+    def generateModel16():
+        model = Sequential(name=model16_name)
+        model.add(
+            Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=input_shape)
+        )
+        model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(
+            Conv2D(64, kernel_size=(2, 2), activation="relu")
+        )
+        model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    #models.append((model16_name,generateModel16))
+
+    model17_name = "17_DoubleConv_LessDense_avg_LargerKernel"
+    def generateModel17():
+        model = Sequential(name=model17_name)
+        model.add(
+            Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=input_shape)
+        )
+        model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(
+            Conv2D(64, kernel_size=(3, 3), activation="relu")
+        )
+        model.add(AveragePooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
+
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(no_classes, activation="softmax"))
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+    models.append((model17_name,generateModel17))
+
+
     return models
+
 
 
 # Path info

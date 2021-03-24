@@ -1,0 +1,2 @@
+model_name,val_loss_mean,val_loss_std,val_accuracy_mean,val_accuracy_std
+17_DoubleConv_LessDense_avg_LargerKernel,0.2804151922464371,0.8971999943256378,0.011615383841867737,0.004821703149296268
