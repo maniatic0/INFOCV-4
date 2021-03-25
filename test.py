@@ -213,7 +213,113 @@ def getModelsGenerators():
         )
         return model
 
-    # models.append((modeltry_name, generateModelSimple))
+    models.append((modeltry_name, generateModelSimple))
+
+    modeltry2_name = "Easy_Model_2"
+    #reduce the number of dense neurons to speed up computation
+    def generateModelSimple2():
+        model = Sequential(name=modeltry2_name)
+        #model.add(data_augmentation)
+        model.add(
+            Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+
+    models.append((modeltry2_name, generateModelSimple2))
+
+    modeltry3_name = "Easy_Model_3"
+    #increase kernel size
+    def generateModelSimple():
+        model = Sequential(name=modeltry3_name)
+        #model.add(data_augmentation)
+        model.add(
+            Conv2D(32, kernel_size=(5, 5), activation="relu", input_shape=INPUT_SHAPE)
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+
+    models.append((modeltry3_name, generateModelSimple3))
+
+    modeltry4_name = "Easy_Model_4"
+    # add an additional convolution layer
+    def generateModelSimple4():
+        model = Sequential(name=modeltry4_name)
+        #model.add(data_augmentation)
+        model.add(
+            Conv2D(32, kernel_size=(5, 5), activation="relu", input_shape=INPUT_SHAPE)
+        )
+        model.add(
+            Conv2D(64, kernel_size=(3, 3), activation="relu")
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+
+    models.append((modeltry4_name, generateModelSimple4))
+
+    modeltry5_name = "Easy_Model_5"
+    # set dropout to 0.5 -> suggested size by Ronald
+    def generateModelSimple4():
+        model = Sequential(name=modeltry5_name)
+        #model.add(data_augmentation)
+        model.add(
+            Conv2D(32, kernel_size=(5, 5), activation="relu", input_shape=INPUT_SHAPE)
+        )
+        model.add(
+            Conv2D(64, kernel_size=(5, 5), activation="relu")
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.5))
+        model.add(Flatten())
+        model.add(Dense(128, activation="relu"))
+        model.add(Dense(64, activation="relu"))
+        model.add(Dense(NO_CLASSES, activation="softmax"))
+
+        # Compile for training
+        model.compile(
+            loss=sparse_categorical_crossentropy,
+            optimizer=Adam(learning_rate=0.01),
+            metrics=["accuracy"],
+        )
+        return model
+
+    models.append((modeltry5_name, generateModelSimple5))
 
     model4_name = "Fourth_Model"
     # Increase pool size, remove 1 dense layer
@@ -419,7 +525,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model11_name, generateModel11))
+    #models.append((model11_name, generateModel11))
 
     model12_name = "All_3_OneDense"
 
@@ -445,7 +551,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model12_name, generateModel12))
+    #models.append((model12_name, generateModel12))
 
     model13_name = "SimpleModel_64Kernel"
 
@@ -469,7 +575,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model13_name, generateModel13))
+    #models.append((model13_name, generateModel13))
 
     """model14_name = "SimpleModel_64Kernel_AvgPooling"
     def generateModel14():
@@ -517,7 +623,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model14_name, generateModel14))
+    #models.append((model14_name, generateModel14))
 
     # TODO: Other models follow a similar structure to define them
 
@@ -543,7 +649,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model15_name, generateModel15))
+    #models.append((model15_name, generateModel15))
 
     model16_name = "DoubleConv_LessDense_avg"
 
@@ -570,7 +676,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model16_name, generateModel16))
+    #models.append((model16_name, generateModel16))
 
     model17_name = "17_DoubleConv_LessDense_avg_LargerKernel"
 
