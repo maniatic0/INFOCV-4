@@ -81,11 +81,6 @@ def getDatasets():
     x_train = np.array(tf.expand_dims(x_train / 255.0, axis=-1))
     x_test = np.array(tf.expand_dims(x_test / 255.0, axis=-1))
 
-    return (x_train, y_train), (x_test, y_test)
-
-
-def getModelsGenerators():
-
     # Data Augmentation
     data_augmentation = tf.keras.Sequential(
         [
@@ -97,7 +92,15 @@ def getModelsGenerators():
         ],
         name="Training_Data_Augmentation",
     )
+    x_train = np.concatenate(
+        (x_train, data_augmentation(x_train, training=True)), axis=0
+    )
+    y_train = np.concatenate((y_train, y_train), axis=0)
 
+    return (x_train, y_train), (x_test, y_test)
+
+
+def getModelsGenerators():
     models = []
 
     # First Model
@@ -105,7 +108,6 @@ def getModelsGenerators():
 
     def generateModel1():
         model = Sequential(name=model1_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -132,7 +134,6 @@ def getModelsGenerators():
 
     def generateModel2():
         model = Sequential(name=model2_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -162,7 +163,6 @@ def getModelsGenerators():
     # this works well
     def generateModel3():
         model = Sequential(name=model3_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -195,7 +195,6 @@ def getModelsGenerators():
     # really simple model with 2 dense layers
     def generateModelSimple():
         model = Sequential(name=model4_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -220,7 +219,6 @@ def getModelsGenerators():
     # Increase pool size, remove 1 dense layer
     def generateModel4():
         model = Sequential(name=model4_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -246,7 +244,6 @@ def getModelsGenerators():
     # Additional Dropout layer
     def generateModel5():
         model = Sequential(name=model5_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -273,7 +270,6 @@ def getModelsGenerators():
     # AveragePooling instead of MaxPooling. Wait until test of model 5 to see if we should cut the additional dropout layer
     def generateModel6():
         model = Sequential(name=model6_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -299,7 +295,6 @@ def getModelsGenerators():
     # Reduce kernel size from (3,3) to (2,2)
     def generateModel7():
         model = Sequential(name=model7_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -324,7 +319,6 @@ def getModelsGenerators():
 
     def generateModel8():
         model = Sequential(name=model8_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -350,7 +344,6 @@ def getModelsGenerators():
 
     def generateModel9():
         model = Sequential(name=model9_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -376,7 +369,6 @@ def getModelsGenerators():
 
     def generateModel10():
         model = Sequential(name=model10_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -405,7 +397,6 @@ def getModelsGenerators():
 
     def generateModel11():
         model = Sequential(name=model11_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -434,7 +425,6 @@ def getModelsGenerators():
 
     def generateModel12():
         model = Sequential(name=model12_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -461,7 +451,6 @@ def getModelsGenerators():
 
     def generateModel13():
         model = Sequential(name=model14_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -510,7 +499,6 @@ def getModelsGenerators():
 
     def generateModel14():
         model = Sequential(name=model14_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -537,7 +525,6 @@ def getModelsGenerators():
 
     def generateModel15():
         model = Sequential(name=model15_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -562,7 +549,6 @@ def getModelsGenerators():
 
     def generateModel16():
         model = Sequential(name=model16_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(2, 2), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -590,7 +576,6 @@ def getModelsGenerators():
 
     def generateModel17():
         model = Sequential(name=model17_name)
-        model.add(data_augmentation)
         model.add(
             Conv2D(64, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -839,23 +824,11 @@ def main():
     # Class Balance Check
     class_count = Counter(y_train)
     total_training = y_train.shape[0]
-    print("Training Classes distribution:")
+    print(f"{total_training} Training Samples. Training Classes distribution:")
     for index, name in enumerate(CLASS_NAMES):
         print(
             f"\t- {name}: {class_count[index]}/{total_training} ({100.0 * class_count[index]/total_training:.2f}%)"
         )
-
-    """ 
-    plt.figure(figsize=(10, 10))
-    for i in range(25):
-        plt.subplot(5, 5, i + 1)
-        plt.xticks([])
-        plt.yticks([])
-        plt.grid(False)
-        plt.imshow(x_train[i], cmap=plt.cm.binary)
-        plt.xlabel(class_names[y_train[i]])
-    plt.show() 
-    """
 
     # Models to run
     models = getModelsGenerators()
