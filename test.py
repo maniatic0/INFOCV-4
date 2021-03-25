@@ -38,6 +38,21 @@ except:
 
 print(f"Running in Collab: {RUNNING_IN_COLAB}")
 print(f"Tensor Flow Version: {tf.__version__}\n")
+print("Devices: ", tf.config.list_physical_devices())
+print("Num GPUs Available: ", len(tf.config.list_physical_devices("GPU")))
+
+if RUNNING_IN_COLAB:
+    import warnings as wn
+
+    device_name = tf.test.gpu_device_name()
+    if device_name != "/device:GPU:0":
+        wn.warnings.warn("GPU device not found", ResourceWarning)
+        print(
+            "\n\nThis error most likely means that this notebook is not "
+            "configured to use a GPU.  Change this in Notebook Settings via the "
+            "command palette (cmd/ctrl-shift-P) or the Edit menu.\n\n"
+        )
+
 
 MNIST = tf.keras.datasets.fashion_mnist
 
@@ -519,6 +534,7 @@ def getModelsGenerators():
     # TODO: Other models follow a similar structure to define them
 
     model15_name = "SimpleModeLessDense"
+
     def generateModel15():
         model = Sequential(name=model15_name)
         model.add(data_augmentation)
@@ -539,7 +555,7 @@ def getModelsGenerators():
             metrics=["accuracy"],
         )
         return model
-    
+
     models.append((model15_name, generateModel15))
 
     model16_name = "DoubleConv_LessDense_avg"
@@ -568,7 +584,7 @@ def getModelsGenerators():
         )
         return model
 
-    models.append((model16_name,generateModel16))
+    models.append((model16_name, generateModel16))
 
     model17_name = "17_DoubleConv_LessDense_avg_LargerKernel"
 
@@ -596,7 +612,7 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((model17_name, generateModel17))
+    # models.append((model17_name, generateModel17))
 
     return models
 
