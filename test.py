@@ -46,7 +46,7 @@ if RUNNING_IN_COLAB:
 
     device_name = tf.test.gpu_device_name()
     if device_name != "/device:GPU:0":
-        wn.warnings.warn("GPU device not found", ResourceWarning)
+        wn.warn("GPU device not found", ResourceWarning)
         print(
             "\n\nThis error most likely means that this notebook is not "
             "configured to use a GPU.  Change this in Notebook Settings via the "
