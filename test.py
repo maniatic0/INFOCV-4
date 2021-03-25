@@ -302,7 +302,7 @@ def getModelsGenerators():
             Conv2D(32, kernel_size=(5, 5), activation="relu", input_shape=INPUT_SHAPE)
         )
         model.add(
-            Conv2D(64, kernel_size=(5, 5), activation="relu")
+            Conv2D(64, kernel_size=(3, 3), activation="relu")
         )
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.5))
