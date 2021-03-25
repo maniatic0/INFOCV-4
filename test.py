@@ -242,7 +242,7 @@ def getModelsGenerators():
 
     modeltry3_name = "Easy_Model_3"
     #increase kernel size
-    def generateModelSimple():
+    def generateModelSimple3():
         model = Sequential(name=modeltry3_name)
         #model.add(data_augmentation)
         model.add(
