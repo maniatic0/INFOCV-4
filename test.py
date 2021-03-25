@@ -194,7 +194,7 @@ def getModelsGenerators():
     modeltry_name = "Easy_Model"
     # really simple model with 2 dense layers
     def generateModelSimple():
-        model = Sequential(name=model4_name)
+        model = Sequential(name=modeltry_name)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -295,7 +295,7 @@ def getModelsGenerators():
 
     modeltry5_name = "Easy_Model_5"
     # set dropout to 0.5 -> suggested size by Ronald
-    def generateModelSimple4():
+    def generateModelSimple5():
         model = Sequential(name=modeltry5_name)
         #model.add(data_augmentation)
         model.add(
