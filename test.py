@@ -216,10 +216,10 @@ def getModelsGenerators():
     models.append((modeltry_name, generateModelSimple))
 
     modeltry2_name = "Easy_Model_2"
-    #reduce the number of dense neurons to speed up computation
+    # reduce the number of dense neurons to speed up computation
     def generateModelSimple2():
         model = Sequential(name=modeltry2_name)
-        #model.add(data_augmentation)
+        # model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(3, 3), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -241,10 +241,10 @@ def getModelsGenerators():
     models.append((modeltry2_name, generateModelSimple2))
 
     modeltry3_name = "Easy_Model_3"
-    #increase kernel size
+    # increase kernel size
     def generateModelSimple3():
         model = Sequential(name=modeltry3_name)
-        #model.add(data_augmentation)
+        # model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(5, 5), activation="relu", input_shape=INPUT_SHAPE)
         )
@@ -269,13 +269,11 @@ def getModelsGenerators():
     # add an additional convolution layer
     def generateModelSimple4():
         model = Sequential(name=modeltry4_name)
-        #model.add(data_augmentation)
+        # model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(5, 5), activation="relu", input_shape=INPUT_SHAPE)
         )
-        model.add(
-            Conv2D(64, kernel_size=(3, 3), activation="relu")
-        )
+        model.add(Conv2D(64, kernel_size=(3, 3), activation="relu"))
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
         model.add(Flatten())
@@ -297,13 +295,11 @@ def getModelsGenerators():
     # set dropout to 0.5 -> suggested size by Ronald
     def generateModelSimple5():
         model = Sequential(name=modeltry5_name)
-        #model.add(data_augmentation)
+        # model.add(data_augmentation)
         model.add(
             Conv2D(32, kernel_size=(5, 5), activation="relu", input_shape=INPUT_SHAPE)
         )
-        model.add(
-            Conv2D(64, kernel_size=(3, 3), activation="relu")
-        )
+        model.add(Conv2D(64, kernel_size=(3, 3), activation="relu"))
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.5))
         model.add(Flatten())
@@ -525,7 +521,7 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((model11_name, generateModel11))
+    # models.append((model11_name, generateModel11))
 
     model12_name = "All_3_OneDense"
 
@@ -551,7 +547,7 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((model12_name, generateModel12))
+    # models.append((model12_name, generateModel12))
 
     model13_name = "SimpleModel_64Kernel"
 
@@ -575,7 +571,7 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((model13_name, generateModel13))
+    # models.append((model13_name, generateModel13))
 
     """model14_name = "SimpleModel_64Kernel_AvgPooling"
     def generateModel14():
@@ -623,7 +619,7 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((model14_name, generateModel14))
+    # models.append((model14_name, generateModel14))
 
     # TODO: Other models follow a similar structure to define them
 
@@ -649,7 +645,7 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((model15_name, generateModel15))
+    # models.append((model15_name, generateModel15))
 
     model16_name = "DoubleConv_LessDense_avg"
 
@@ -676,7 +672,7 @@ def getModelsGenerators():
         )
         return model
 
-    #models.append((model16_name, generateModel16))
+    # models.append((model16_name, generateModel16))
 
     model17_name = "17_DoubleConv_LessDense_avg_LargerKernel"
 
