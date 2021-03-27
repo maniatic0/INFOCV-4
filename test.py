@@ -1058,8 +1058,8 @@ def main():
         models_processed_csv_scores[index] = {
             "model_name": name,
             "val_loss_mean": means[0],
-            "val_loss_std": means[1],
-            "val_accuracy_mean": stds[0],
+            "val_loss_std": stds[0],
+            "val_accuracy_mean": means[1],
             "val_accuracy_std": stds[1],
         }
 
